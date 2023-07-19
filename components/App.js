@@ -27,6 +27,7 @@ export class App {
         SelectedLanguage.setState({ selection: newSelection });
       }
     };
+
     new SelectedLanguage({
       $app,
       selection: this.state.selection,

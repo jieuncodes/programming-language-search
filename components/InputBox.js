@@ -63,47 +63,57 @@ export default class InputBox {
       this.input.focus();
     };
 
-    this.input.addEventListener("input", async (e) => {
-      const typedValue = e.target.value;
-      if (typedValue === "") {
-        this.setState({ resultState: [] });
-        return;
-      } else {
-        const res = await fetchSearchResult(typedValue);
-        this.setState({ resultState: res });
-      }
-    });
-
-    this.input.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-          e.preventDefault();
-          this.setState({
-            selectedIndex:
-              this.state.selectedIndex === 0
-                ? this.state.resultState.length - 1
-                : this.state.selectedIndex - 1,
-          });
-          break;
-        case "ArrowDown":
-          e.preventDefault();
-          this.setState({
-            selectedIndex:
-              this.state.selectedIndex >= this.state.resultState.length - 1
-                ? 0
-                : this.state.selectedIndex + 1,
-          });
-          break;
-        case "Enter":
-          if (this.state.isSuggestionOn && this.state.selectedIndex >= 0) {
-            window.alert(this.state.resultState[this.state.selectedIndex]);
-          }
-          break;
-        default:
-          break;
-      }
-    });
-
+    this.bindEvents();
     this.render();
   }
+  bindEvents() {
+    this.input.addEventListener("input", this.handleInput.bind(this));
+    this.input.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleInput = async (e) => {
+    const typedValue = e.target.value;
+    if (typedValue === "") {
+      this.setState({ resultState: [] });
+      return;
+    } else {
+      try {
+        const res = await fetchSearchResult(typedValue);
+        this.setState({ resultState: res });
+      } catch (error) {
+        console.error("Failed to fetch search result:", error);
+      }
+    }
+  };
+
+  handleKeyDown = (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault();
+        this.setState({
+          selectedIndex:
+            this.state.selectedIndex === 0
+              ? this.state.resultState.length - 1
+              : this.state.selectedIndex - 1,
+        });
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        this.setState({
+          selectedIndex:
+            this.state.selectedIndex >= this.state.resultState.length - 1
+              ? 0
+              : this.state.selectedIndex + 1,
+        });
+        break;
+      case "Enter":
+        if (this.state.isSuggestionOn && this.state.selectedIndex >= 0) {
+          onSelect();
+          window.alert(this.state.resultState[this.state.selectedIndex]);
+        }
+        break;
+      default:
+        break;
+    }
+  };
 }
