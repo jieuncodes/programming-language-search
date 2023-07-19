@@ -4,7 +4,7 @@ import SelectedLanguage from "./SelectedLanguage.js";
 export class App {
   constructor($app) {
     this.state = {
-      selection: [],
+      selection: JSON.parse(localStorage.getItem("selection")) || [],
     };
 
     this.onSelect = (language) => {
@@ -22,6 +22,8 @@ export class App {
         while (newSelection.length > 5) {
           newSelection.shift();
         }
+
+        localStorage.setItem("selection", JSON.stringify(newSelection));
 
         this.setState({ selection: newSelection });
         selectedLanguage.setState({ selection: newSelection });

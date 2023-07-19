@@ -3,7 +3,7 @@ const ROOT_URL =
 
 export const fetchSearchResult = async (inputValue) => {
   try {
-    const cachedResponse = localStorage.getItem(inputValue);
+    const cachedResponse = sessionStorage.getItem(inputValue);
     if (cachedResponse) {
       return JSON.parse(cachedResponse);
     }
@@ -14,7 +14,7 @@ export const fetchSearchResult = async (inputValue) => {
     }
 
     const data = await response.json();
-    localStorage.setItem(inputValue, JSON.stringify(data));
+    sessionStorage.setItem(inputValue, JSON.stringify(data));
 
     return data;
   } catch (error) {

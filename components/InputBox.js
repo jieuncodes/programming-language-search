@@ -36,21 +36,28 @@ export default class InputBox {
         this.state.isSuggestionOn = false;
       } else {
         this.suggestionContainer.style.visibility = "visible";
-        this.suggestionContainer.innerHTML = `
-                <ul>${this.state.resultState
-                  .map((item, index) => {
-                    return `<li data-index="${index}" class="
-                    ${
-                      this.input.value == item.trim()
-                        ? "Suggestion__item--matched"
-                        : index === this.state.selectedIndex
-                        ? "Suggestion__item--selected"
-                        : ""
-                    }">
-                        ${item}</li>`;
-                  })
-                  .join("")}
-                </ul>`;
+
+        const renderedSuggestions = this.state.resultState
+          .map((item, index) => {
+            const regex = new RegExp(`(${this.input.value.trim()})`, "gi");
+            const highlightedItem = item.replace(
+              regex,
+              '<span class="Suggestion__item--matched">$1</span>'
+            );
+
+            const isSelected = index === this.state.selectedIndex;
+            const listItemClass = isSelected
+              ? "Suggestion__item--selected"
+              : "";
+
+            return `
+                    <li data-index="${index}" class="${listItemClass}">
+                        ${highlightedItem}
+                    </li>`;
+          })
+          .join("");
+
+        this.suggestionContainer.innerHTML = `<ul>${renderedSuggestions}</ul>`;
         this.state.isSuggestionOn = true;
 
         this.suggestionContainer.querySelectorAll("li").forEach((li) => {
@@ -60,7 +67,6 @@ export default class InputBox {
           });
         });
       }
-      this.input.focus();
     };
 
     this.bindEvents();
