@@ -72,8 +72,22 @@ export default class InputBox {
     this.bindEvents();
     this.render();
   }
+
+  debounce = (func, delay) => {
+    let inDebounce;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(inDebounce);
+      inDebounce = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
   bindEvents() {
-    this.input.addEventListener("input", this.handleInput.bind(this));
+    this.input.addEventListener(
+      "input",
+      this.debounce(this.handleInput.bind(this), 200)
+    );
     this.input.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
