@@ -87,6 +87,9 @@ export default class InputBox {
   };
 
   handleKeyDown = (e) => {
+    if (e.defaultPrevented) {
+      return;
+    }
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
@@ -107,9 +110,9 @@ export default class InputBox {
         });
         break;
       case "Enter":
+        e.preventDefault();
         if (this.state.isSuggestionOn && this.state.selectedIndex >= 0) {
-          onSelect();
-          window.alert(this.state.resultState[this.state.selectedIndex]);
+          this.onSelect(this.state.resultState[this.state.selectedIndex]);
         }
         break;
       default:

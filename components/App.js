@@ -24,11 +24,11 @@ export class App {
         }
 
         this.setState({ selection: newSelection });
-        SelectedLanguage.setState({ selection: newSelection });
+        selectedLanguage.setState({ selection: newSelection });
       }
     };
 
-    new SelectedLanguage({
+    const selectedLanguage = new SelectedLanguage({
       $app,
       selection: this.state.selection,
       onSelect: this.onSelect.bind(this),
